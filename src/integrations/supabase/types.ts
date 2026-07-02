@@ -14,7 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      progress: {
+        Row: {
+          done: boolean
+          note: string
+          topic_id: string
+          updated_at: string
+        }
+        Insert: {
+          done?: boolean
+          note?: string
+          topic_id: string
+          updated_at?: string
+        }
+        Update: {
+          done?: boolean
+          note?: string
+          topic_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
