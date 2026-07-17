@@ -33,7 +33,7 @@ export const Route = createFileRoute("/domains/$domainId")({
 const LEVELS: Level[] = ["Fundamentals", "Intermediate", "Advanced", "Expert"];
 
 function DomainDetail() {
-  const { domainId } = Route.useLoaderData();
+  const { domainId } = Route.useLoaderData() as { domainId: DomainId };
   const domain = DOMAIN_BY_ID[domainId];
   const p = useProgress();
   const [levelFilter, setLevelFilter] = useState<Level | "all">("all");
