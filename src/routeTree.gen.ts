@@ -9,38 +9,219 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WizybotRouteImport } from './routes/wizybot'
+import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as PathsRouteImport } from './routes/paths'
+import { Route as InterviewRouteImport } from './routes/interview'
+import { Route as GraphRouteImport } from './routes/graph'
+import { Route as DomainsRouteImport } from './routes/domains'
+import { Route as CareerRouteImport } from './routes/career'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TopicTopicIdRouteImport } from './routes/topic.$topicId'
+import { Route as PathsPathIdRouteImport } from './routes/paths.$pathId'
+import { Route as DomainsDomainIdRouteImport } from './routes/domains.$domainId'
 
+const WizybotRoute = WizybotRouteImport.update({
+  id: '/wizybot',
+  path: '/wizybot',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PathsRoute = PathsRouteImport.update({
+  id: '/paths',
+  path: '/paths',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InterviewRoute = InterviewRouteImport.update({
+  id: '/interview',
+  path: '/interview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GraphRoute = GraphRouteImport.update({
+  id: '/graph',
+  path: '/graph',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DomainsRoute = DomainsRouteImport.update({
+  id: '/domains',
+  path: '/domains',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareerRoute = CareerRouteImport.update({
+  id: '/career',
+  path: '/career',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TopicTopicIdRoute = TopicTopicIdRouteImport.update({
+  id: '/topic/$topicId',
+  path: '/topic/$topicId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PathsPathIdRoute = PathsPathIdRouteImport.update({
+  id: '/$pathId',
+  path: '/$pathId',
+  getParentRoute: () => PathsRoute,
+} as any)
+const DomainsDomainIdRoute = DomainsDomainIdRouteImport.update({
+  id: '/$domainId',
+  path: '/$domainId',
+  getParentRoute: () => DomainsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/career': typeof CareerRoute
+  '/domains': typeof DomainsRouteWithChildren
+  '/graph': typeof GraphRoute
+  '/interview': typeof InterviewRoute
+  '/paths': typeof PathsRouteWithChildren
+  '/projects': typeof ProjectsRoute
+  '/wizybot': typeof WizybotRoute
+  '/domains/$domainId': typeof DomainsDomainIdRoute
+  '/paths/$pathId': typeof PathsPathIdRoute
+  '/topic/$topicId': typeof TopicTopicIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/career': typeof CareerRoute
+  '/domains': typeof DomainsRouteWithChildren
+  '/graph': typeof GraphRoute
+  '/interview': typeof InterviewRoute
+  '/paths': typeof PathsRouteWithChildren
+  '/projects': typeof ProjectsRoute
+  '/wizybot': typeof WizybotRoute
+  '/domains/$domainId': typeof DomainsDomainIdRoute
+  '/paths/$pathId': typeof PathsPathIdRoute
+  '/topic/$topicId': typeof TopicTopicIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/career': typeof CareerRoute
+  '/domains': typeof DomainsRouteWithChildren
+  '/graph': typeof GraphRoute
+  '/interview': typeof InterviewRoute
+  '/paths': typeof PathsRouteWithChildren
+  '/projects': typeof ProjectsRoute
+  '/wizybot': typeof WizybotRoute
+  '/domains/$domainId': typeof DomainsDomainIdRoute
+  '/paths/$pathId': typeof PathsPathIdRoute
+  '/topic/$topicId': typeof TopicTopicIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/career'
+    | '/domains'
+    | '/graph'
+    | '/interview'
+    | '/paths'
+    | '/projects'
+    | '/wizybot'
+    | '/domains/$domainId'
+    | '/paths/$pathId'
+    | '/topic/$topicId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/career'
+    | '/domains'
+    | '/graph'
+    | '/interview'
+    | '/paths'
+    | '/projects'
+    | '/wizybot'
+    | '/domains/$domainId'
+    | '/paths/$pathId'
+    | '/topic/$topicId'
+  id:
+    | '__root__'
+    | '/'
+    | '/career'
+    | '/domains'
+    | '/graph'
+    | '/interview'
+    | '/paths'
+    | '/projects'
+    | '/wizybot'
+    | '/domains/$domainId'
+    | '/paths/$pathId'
+    | '/topic/$topicId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CareerRoute: typeof CareerRoute
+  DomainsRoute: typeof DomainsRouteWithChildren
+  GraphRoute: typeof GraphRoute
+  InterviewRoute: typeof InterviewRoute
+  PathsRoute: typeof PathsRouteWithChildren
+  ProjectsRoute: typeof ProjectsRoute
+  WizybotRoute: typeof WizybotRoute
+  TopicTopicIdRoute: typeof TopicTopicIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wizybot': {
+      id: '/wizybot'
+      path: '/wizybot'
+      fullPath: '/wizybot'
+      preLoaderRoute: typeof WizybotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/paths': {
+      id: '/paths'
+      path: '/paths'
+      fullPath: '/paths'
+      preLoaderRoute: typeof PathsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/interview': {
+      id: '/interview'
+      path: '/interview'
+      fullPath: '/interview'
+      preLoaderRoute: typeof InterviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/graph': {
+      id: '/graph'
+      path: '/graph'
+      fullPath: '/graph'
+      preLoaderRoute: typeof GraphRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/domains': {
+      id: '/domains'
+      path: '/domains'
+      fullPath: '/domains'
+      preLoaderRoute: typeof DomainsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/career': {
+      id: '/career'
+      path: '/career'
+      fullPath: '/career'
+      preLoaderRoute: typeof CareerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +229,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/topic/$topicId': {
+      id: '/topic/$topicId'
+      path: '/topic/$topicId'
+      fullPath: '/topic/$topicId'
+      preLoaderRoute: typeof TopicTopicIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/paths/$pathId': {
+      id: '/paths/$pathId'
+      path: '/$pathId'
+      fullPath: '/paths/$pathId'
+      preLoaderRoute: typeof PathsPathIdRouteImport
+      parentRoute: typeof PathsRoute
+    }
+    '/domains/$domainId': {
+      id: '/domains/$domainId'
+      path: '/$domainId'
+      fullPath: '/domains/$domainId'
+      preLoaderRoute: typeof DomainsDomainIdRouteImport
+      parentRoute: typeof DomainsRoute
+    }
   }
 }
 
+interface DomainsRouteChildren {
+  DomainsDomainIdRoute: typeof DomainsDomainIdRoute
+}
+
+const DomainsRouteChildren: DomainsRouteChildren = {
+  DomainsDomainIdRoute: DomainsDomainIdRoute,
+}
+
+const DomainsRouteWithChildren =
+  DomainsRoute._addFileChildren(DomainsRouteChildren)
+
+interface PathsRouteChildren {
+  PathsPathIdRoute: typeof PathsPathIdRoute
+}
+
+const PathsRouteChildren: PathsRouteChildren = {
+  PathsPathIdRoute: PathsPathIdRoute,
+}
+
+const PathsRouteWithChildren = PathsRoute._addFileChildren(PathsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CareerRoute: CareerRoute,
+  DomainsRoute: DomainsRouteWithChildren,
+  GraphRoute: GraphRoute,
+  InterviewRoute: InterviewRoute,
+  PathsRoute: PathsRouteWithChildren,
+  ProjectsRoute: ProjectsRoute,
+  WizybotRoute: WizybotRoute,
+  TopicTopicIdRoute: TopicTopicIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
