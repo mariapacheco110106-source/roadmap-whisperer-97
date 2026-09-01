@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { blockersOf as calcBlockers, isBlocked as calcBlocked } from "@/lib/roadmap-utils";
 
 const STORAGE_KEY = "wizybot-roadmap-progress-v1";
 const MIGRATED_FLAG = "wizybot-roadmap-migrated-v1";
@@ -68,7 +67,11 @@ export function useProgress() {
         Object.keys(local.done).length > 0 || Object.keys(local.notes).length > 0;
 
       if (hasLocal && !alreadyMigrated) {
-        const ids = new Set([...Object.keys(local.done), ...Object.keys(local.notes)]);
+        // Merge local into remote (local wins on conflict for first migration).
+        const ids = new Set([
+          ...Object.keys(local.done),
+          ...Object.keys(local.notes),
+        ]);
         const rows = Array.from(ids).map((id) => ({
           topic_id: id,
           done: Boolean(local.done[id] ?? remote.done[id]),
@@ -79,7 +82,8 @@ export function useProgress() {
           await supabase.from("progress").upsert(rows, { onConflict: "topic_id" });
         }
         window.localStorage.setItem(MIGRATED_FLAG, "1");
-        setState(await fetchAll());
+        const merged = await fetchAll();
+        setState(merged);
       } else {
         if (!alreadyMigrated && typeof window !== "undefined") {
           window.localStorage.setItem(MIGRATED_FLAG, "1");
@@ -90,12 +94,9 @@ export function useProgress() {
     })();
   }, []);
 
-  const toggle = useCallback((id: string, opts?: { force?: boolean }) => {
+  const toggle = useCallback((id: string) => {
     const current = Boolean(stateRef.current.done[id]);
     const next = !current;
-    if (next && !opts?.force && calcBlocked(id, stateRef.current.done)) {
-      return { ok: false as const, blockedBy: calcBlockers(id, stateRef.current.done) };
-    }
     setState((prev) => {
       const done = { ...prev.done };
       if (next) done[id] = true;
@@ -103,9 +104,11 @@ export function useProgress() {
       return { ...prev, done };
     });
     const note = stateRef.current.notes[id] ?? "";
-    if (!next && !note) void deleteRow(id);
-    else void upsertRow(id, { done: next, note });
-    return { ok: true as const };
+    if (!next && !note) {
+      void deleteRow(id);
+    } else {
+      void upsertRow(id, { done: next, note });
+    }
   }, []);
 
   const setNote = useCallback((id: string, note: string) => {
@@ -116,8 +119,11 @@ export function useProgress() {
       return { ...prev, notes };
     });
     const done = Boolean(stateRef.current.done[id]);
-    if (!note && !done) void deleteRow(id);
-    else void upsertRow(id, { done, note });
+    if (!note && !done) {
+      void deleteRow(id);
+    } else {
+      void upsertRow(id, { done, note });
+    }
   }, []);
 
   const reset = useCallback(() => {
@@ -125,20 +131,50 @@ export function useProgress() {
     void supabase.from("progress").delete().neq("topic_id", "");
   }, []);
 
-  const api = useMemo(
-    () => ({
-      done: state.done,
-      notes: state.notes,
-      hydrated,
-      toggle,
-      setNote,
-      reset,
-      isDone: (id: string) => Boolean(state.done[id]),
-      isBlocked: (id: string) => calcBlocked(id, state.done),
-      blockersOf: (id: string) => calcBlockers(id, state.done),
-    }),
-    [state, hydrated, toggle, setNote, reset],
-  );
+  const bulkSet = useCallback((ids: string[], value: boolean) => {
+    setState((prev) => {
+      const done = { ...prev.done };
+      for (const id of ids) {
+        if (value) done[id] = true;
+        else delete done[id];
+      }
+      return { ...prev, done };
+    });
+    if (value) {
+      const rows = ids.map((id) => ({
+        topic_id: id,
+        done: true,
+        note: stateRef.current.notes[id] ?? "",
+        updated_at: new Date().toISOString(),
+      }));
+      void supabase.from("progress").upsert(rows, { onConflict: "topic_id" });
+    } else {
+      // For unset, delete rows that have no note, otherwise update done=false
+      const withNotes = ids.filter((id) => stateRef.current.notes[id]);
+      const withoutNotes = ids.filter((id) => !stateRef.current.notes[id]);
+      if (withoutNotes.length > 0) {
+        void supabase.from("progress").delete().in("topic_id", withoutNotes);
+      }
+      if (withNotes.length > 0) {
+        const rows = withNotes.map((id) => ({
+          topic_id: id,
+          done: false,
+          note: stateRef.current.notes[id] ?? "",
+          updated_at: new Date().toISOString(),
+        }));
+        void supabase.from("progress").upsert(rows, { onConflict: "topic_id" });
+      }
+    }
+  }, []);
 
-  return api;
+  return {
+    done: state.done,
+    notes: state.notes,
+    hydrated,
+    toggle,
+    setNote,
+    reset,
+    bulkSet,
+    isDone: (id: string) => Boolean(state.done[id]),
+  };
 }

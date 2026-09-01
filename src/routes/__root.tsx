@@ -12,21 +12,21 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
-const TITLE = "AI Software Engineering Roadmap";
-const DESC =
-  "Ruta completa para convertirte en Software Engineer especializado en IA: fundamentos, sistemas distribuidos, ML, LLMs, agentes y MLOps. Con tracking de progreso persistente.";
-
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="font-display text-7xl text-foreground">404</h1>
+        <h1 className="text-7xl font-bold text-foreground">404</h1>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Esta ruta no existe en el roadmap.
+          The page you're looking for doesn't exist or has been moved.
         </p>
         <div className="mt-6">
-          <Link to="/" className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground hover:opacity-90">
-            Volver al panorama
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Go home
           </Link>
         </div>
       </div>
@@ -40,19 +40,32 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="font-display text-3xl text-foreground">Algo se rompió</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Vuelve a intentarlo o regresa al inicio.</p>
-        <div className="mt-6 flex justify-center gap-2">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+          This page didn't load
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Something went wrong on our end. You can try refreshing or head back home.
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
-            onClick={() => { router.invalidate(); reset(); }}
-            className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground"
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Reintentar
+            Try again
           </button>
-          <a href="/" className="rounded-md border border-border px-4 py-2 text-sm">Inicio</a>
+          <a
+            href="/"
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+          >
+            Go home
+          </a>
         </div>
       </div>
     </div>
@@ -64,14 +77,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: TITLE },
-      { name: "description", content: DESC },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESC },
+      { title: "WizyBot Roadmap" },
+      { name: "description", content: "Roadmap técnico completo de WizyBot con tracking personal de progreso: 10 tecnologías, 150+ temas, 26 semanas." },
+      { property: "og:title", content: "WizyBot Roadmap" },
+      { property: "og:description", content: "Roadmap técnico completo de WizyBot con tracking personal de progreso: 10 tecnologías, 150+ temas, 26 semanas." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: TITLE },
-      { name: "twitter:description", content: DESC },
+      { name: "twitter:title", content: "WizyBot Roadmap" },
+      { name: "twitter:description", content: "Roadmap técnico completo de WizyBot con tracking personal de progreso: 10 tecnologías, 150+ temas, 26 semanas." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/88c6f33b-87e5-433a-848a-52428c2101b4/id-preview-cddf9d63--a1f7d877-7afb-4d6a-8174-fb524efed946.lovable.app-1782937232495.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/88c6f33b-87e5-433a-848a-52428c2101b4/id-preview-cddf9d63--a1f7d877-7afb-4d6a-8174-fb524efed946.lovable.app-1782937232495.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -89,7 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="es">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
@@ -101,57 +116,13 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-const NAV: { to: string; label: string }[] = [
-  { to: "/", label: "Panorama" },
-  { to: "/domains", label: "Dominios" },
-  { to: "/paths", label: "Rutas" },
-  { to: "/graph", label: "Grafo" },
-  { to: "/projects", label: "Proyectos" },
-  { to: "/interview", label: "Interview" },
-  { to: "/career", label: "Carrera" },
-  { to: "/wizybot", label: "WizyBot" },
-];
-
-function Nav() {
-  return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
-        <Link to="/" className="flex items-baseline gap-2">
-          <span className="font-display text-xl leading-none">AI SWE</span>
-          <span className="hidden font-mono text-[10px] uppercase tracking-widest text-muted-foreground sm:inline">
-            Roadmap
-          </span>
-        </Link>
-        <nav className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] uppercase tracking-wide">
-          {NAV.map((n) => (
-            <Link
-              key={n.to}
-              to={n.to}
-              activeOptions={{ exact: n.to === "/" }}
-              activeProps={{ className: "text-foreground border-b border-accent" }}
-              inactiveProps={{ className: "text-muted-foreground hover:text-foreground" }}
-              className="pb-0.5 transition"
-            >
-              {n.label}
-            </Link>
-          ))}
-        </nav>
-      </div>
-    </header>
-  );
-}
-
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-background text-foreground">
-        <Nav />
-        <Outlet />
-        <footer className="mx-auto max-w-7xl px-4 py-8 font-mono text-[10px] uppercase tracking-widest text-muted-foreground sm:px-6">
-          AI Software Engineering Roadmap · progreso sincronizado
-        </footer>
-      </div>
+      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+      <Outlet />
     </QueryClientProvider>
   );
 }
