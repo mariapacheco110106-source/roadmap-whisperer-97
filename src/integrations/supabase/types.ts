@@ -16,20 +16,26 @@ export type Database = {
     Tables: {
       progress: {
         Row: {
+          checks: Json
           done: boolean
           note: string
+          status: string
           topic_id: string
           updated_at: string
         }
         Insert: {
+          checks?: Json
           done?: boolean
           note?: string
+          status?: string
           topic_id: string
           updated_at?: string
         }
         Update: {
+          checks?: Json
           done?: boolean
           note?: string
+          status?: string
           topic_id?: string
           updated_at?: string
         }
